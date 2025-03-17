@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ExitToApp
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
@@ -23,6 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
@@ -30,6 +32,7 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.*
@@ -43,6 +46,7 @@ import kmpproject.composeapp.generated.resources.Res
 import kmpproject.composeapp.generated.resources.compose_multiplatform
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
 fun App() {
@@ -58,10 +62,18 @@ fun App() {
                             .verticalScroll(rememberScrollState())
                     ) {
                         Spacer(Modifier.height(12.dp))
-                        Text("Drawer Title", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleLarge)
+                        Text(
+                            "Drawer Title",
+                            modifier = Modifier.padding(16.dp),
+                            style = MaterialTheme.typography.titleLarge
+                        )
                         HorizontalDivider()
 
-                        Text("Section 1", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleMedium)
+                        Text(
+                            "Section 1",
+                            modifier = Modifier.padding(16.dp),
+                            style = MaterialTheme.typography.titleMedium
+                        )
                         NavigationDrawerItem(
                             label = { Text("Item 1") },
                             selected = false,
@@ -75,7 +87,11 @@ fun App() {
 
                         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-                        Text("Section 2", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleMedium)
+                        Text(
+                            "Section 2",
+                            modifier = Modifier.padding(16.dp),
+                            style = MaterialTheme.typography.titleMedium
+                        )
                         NavigationDrawerItem(
                             label = { Text("Settings") },
                             selected = false,
@@ -86,7 +102,12 @@ fun App() {
                         NavigationDrawerItem(
                             label = { Text("Help and feedback") },
                             selected = false,
-                            icon = { Icon(Icons.AutoMirrored.Outlined.ExitToApp, contentDescription = null) },
+                            icon = {
+                                Icon(
+                                    Icons.AutoMirrored.Outlined.ExitToApp,
+                                    contentDescription = null
+                                )
+                            },
                             onClick = { /* Handle click */ },
                         )
                         Spacer(Modifier.height(12.dp))
@@ -94,6 +115,7 @@ fun App() {
                 }
             },
         ) {
+            var showContent by remember { mutableStateOf(false) }
             Scaffold(
                 floatingActionButton = {
                     ExtendedFloatingActionButton(
@@ -107,44 +129,70 @@ fun App() {
                             }
                         }
                     )
+                },
+                topBar = {
+                    TopAppBar(
+                        title = {
+                            Button(onClick = { showContent = !showContent }) {
+                                Text("Click me!")
+                            }
+                        },
+                        navigationIcon = {
+                            IconButton(onClick = {
+                                scope.launch {
+                                    drawerState.apply {
+                                        if (isClosed) open() else close()
+                                    }
+                                }
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Menu,
+                                    contentDescription = "Localized description"
+                                )
+                            }
+
+                        },
+                        actions = {
+                            ExtendedFloatingActionButton(
+                                onClick = { /*..*/ },
+                                modifier = Modifier
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = "edit",
+                                )
+                                Text(
+                                    text = "Add Entry",
+                                )
+                            }
+                        }
+                    )
                 }
             ) { contentPadding ->
-                var showContent by remember { mutableStateOf(false) }
-                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Button(onClick = { showContent = !showContent }) {
-                        Text("Click me!")
-                    }
-                    AnimatedVisibility(showContent) {
-                        Scaffold {
-                            Text("Hello, World!")
 
-                        }
+                Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Spacer(Modifier.weight(1f))
+
+                    AnimatedVisibility(showContent) {
                         val greeting = remember { Greeting().greet() }
-                        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                        Column(
+                            Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
                             Image(painterResource(Res.drawable.compose_multiplatform), null)
                             Text("Compose: $greeting")
 
                         }
                     }
-                    ExtendedFloatingActionButton(
-                        onClick = { /*..*/ },
-                        modifier = Modifier
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = "edit",
-                        )
-                        Text(
-                            text = "Add Entry",
-                        )
-                    }
+                    Spacer(Modifier.weight(1f))
+
 
                 }
-                PullToRefreshBasicSample(
-                    items = (0..20).map { "Item $it" },
-                    isRefreshing = false,
-                    onRefresh = { /*TODO*/ }
-                )
+//                PullToRefreshBasicSample(
+//                    items = (0..20).map { "Item $it" },
+//                    isRefreshing = false,
+//                    onRefresh = { /*TODO*/ }
+//                )
             }
         }
 
