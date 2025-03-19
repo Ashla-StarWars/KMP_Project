@@ -42,8 +42,8 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-import kmpproject.composeapp.generated.resources.Res
-import kmpproject.composeapp.generated.resources.compose_multiplatform
+import kmp_project_full.composeapp.generated.resources.Res
+import kmp_project_full.composeapp.generated.resources.compose_multiplatform
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -133,9 +133,7 @@ fun App() {
                 topBar = {
                     TopAppBar(
                         title = {
-                            Button(onClick = { showContent = !showContent }) {
-                                Text("Click me!")
-                            }
+
                         },
                         navigationIcon = {
                             IconButton(onClick = {
@@ -153,17 +151,8 @@ fun App() {
 
                         },
                         actions = {
-                            ExtendedFloatingActionButton(
-                                onClick = { /*..*/ },
-                                modifier = Modifier
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Edit,
-                                    contentDescription = "edit",
-                                )
-                                Text(
-                                    text = "Add Entry",
-                                )
+                            Button(onClick = { showContent = !showContent }) {
+                                Text("Click me!")
                             }
                         }
                     )
